@@ -1,3 +1,5 @@
+# realised that the initial coords are the wrong way around (bottom left should be (0,0)
+
 a, c, m = [int(i) for i in input().split()]
 r = 0
 ships = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
