@@ -1,42 +1,70 @@
-from collections import defaultdict
-from copy import deepcopy
+# a) [24]
+# b) 7, 16 [4]
+# c) 26 [3/6] 2620
+n = int(input())
+s = input()
+queue = [(s, 0)]
+ans = 0
+done = set()
+done.add(s)
+while queue:
+    cur, dist = queue.pop(0)
+    ans = max(ans, dist)
+    for i in range(len(cur)-1):
+        a, b = cur[i], cur[i+1]
+        lo = min(int(a), int(b))
+        hi = max(int(a), int(b))
+        valid = False
+        if i-1 >= 0:
+            if lo < int(cur[i-1]) < hi:
+                valid = True
+        if i+2 < len(cur):
+            if lo < int(cur[i+2]) < hi:
+                valid = True
+        if valid:
+            new = cur[:i]+b+a+cur[i+2:]
+            if new not in done:
+                queue.append((new, dist+1))
+                done.add(new)
+print(ans)
 
-d = int(input())
-n = [int(i) for i in input()]
-dists = defaultdict(lambda: 2**31)
+# c) (doing 9 digits is too slow i hate python now)
+# from itertools import permutations
+# equiv = {}
+# for s in list(permutations('12345')):
+#     s = ''.join(s)
+#     queue = [(s, 0)]
+#     done = set()
+#     equiv[s] = []
+#     done.add(s)
+#     while queue:
+#         cur, dist = queue.pop(0)
+#         if cur != s:
+#             equiv[s].append(cur)
+#         for i in range(len(cur)-1):
+#             a, b = cur[i], cur[i+1]
+#             lo = min(int(a), int(b))
+#             hi = max(int(a), int(b))
+#             valid = False
+#             if i-1 >= 0:
+#                 if lo < int(cur[i-1]) < hi:
+#                     valid = True
+#             if i+2 < len(cur):
+#                 if lo < int(cur[i+2]) < hi:
+#                     valid = True
+#             if valid:
+#                 new = cur[:i]+b+a+cur[i+2:]
+#                 if new not in done:
+#                     queue.append((new, dist+1))
+#                     done.add(new)
 
-def check(k, i, j, n):
-    if (n[i] < n[k] < n[j]) or (n[j] < n[k] < n[i]):
-        return True
-    return False
-
-def search(n, distance, visited):
-    for i in range(d-1):
-        j = i+1
-        new = n[:i] + [n[j]] + [n[i]] + n[j+1:]
-        temp = tuple(new)
-        if temp not in visited:
-            if i > 0:
-                if check(i-1, i, j, n):
-                    visited.add(temp)
-                    dists[temp] = min(dists[temp], distance+1)
-                    search(n[:i] + [n[j]] + [n[i]] + n[j+1:], distance+1, deepcopy(visited))
-                    continue
-                poss = True
-            if j < d-1:
-                if check(j+1, i, j, n):
-                    visited.add(temp)
-                    dists[temp] = min(dists[temp], distance+1)
-                    search(n[:i] + [n[j]] + [n[i]] + n[j+1:], distance+1, deepcopy(visited))
-                    continue
-                poss = True
-            if not poss:
-                visited.add(temp)
-    return distance
-v = set()
-v.add(tuple(n))
-search(n, 0, deepcopy(v))
-if len(dists) == 0:
-    print(0)
-else:
-    print(max(dists.values()))
+# seen = set()
+# d = {}
+# c = 0
+# for s in equiv:
+#     if s not in seen:
+#         c += 1
+#     for check in equiv[s]:
+#         if s != check and check not in seen:
+#             seen.add(check)
+# print(c)
